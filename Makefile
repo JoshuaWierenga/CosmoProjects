@@ -246,6 +246,7 @@ include examples/package/lib/build.mk
 include examples/package/build.mk
 #-φ-examples/package/new.sh
 include test/test.mk
+include third_party/aoc/aoc.mk
 
 OBJS	 = $(foreach x,$(PKGS),$($(x)_OBJS))
 SRCS	:= $(foreach x,$(PKGS),$($(x)_SRCS))
