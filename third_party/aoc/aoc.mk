@@ -6,7 +6,9 @@ PKGS += THIRD_PARTY_AOC
 THIRD_PARTY_AOC_ARTIFACTS += THIRD_PARTY_AOC_A
 THIRD_PARTY_AOC = $(THIRD_PARTY_AOC_A_DEPS) $(THIRD_PARTY_AOC_A)
 THIRD_PARTY_AOC_A = o/$(MODE)/third_party/aoc/aoc.a
-THIRD_PARTY_AOC_A_FILES := $(wildcard third_party/aoc/*)
+THIRD_PARTY_AOC_A_FILES :=                      \
+    $(wildcard third_party/aoc/*)               \
+    third_party/aoc/utilities/hashmap/src/cmap.c
 THIRD_PARTY_AOC_A_HDRS = $(filter %.h,$(THIRD_PARTY_AOC_A_FILES))
 THIRD_PARTY_AOC_A_SRCS = $(filter %.c,$(THIRD_PARTY_AOC_A_FILES))
 THIRD_PARTY_AOC_A_OBJS = $(THIRD_PARTY_AOC_A_SRCS:%.c=o/$(MODE)/%.o)

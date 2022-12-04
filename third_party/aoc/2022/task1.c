@@ -86,8 +86,8 @@ void task1()
         currentElfCalories += input;
     }
     
-    printf("Part 1: Highest number of calories:              %i\n", highestElfCalories);
-    printf("Part 2: Sum of three highest number of calories: %i\n", highestElfCalories + secondHighestElfCalories + thirdHighestElfCalories);
+    printf("Part 1: Highest number of calories:              %" PRIdFAST32 "\n", highestElfCalories);
+    printf("Part 2: Sum of three highest number of calories: %" PRIdFAST32 "\n", highestElfCalories + secondHighestElfCalories + thirdHighestElfCalories);
     
     fclose(fp);
 }
