@@ -76,6 +76,7 @@ void task3()
         
         uint_fast8_t compartmentLength = length / 2;
         // Do not need the value currently but getting a hashset type as well felt overkill
+        // TODO Reuse map
         map_t(char, uint_least8_t) compartment1Items;
         map_stdinit(&compartment1Items);
         
