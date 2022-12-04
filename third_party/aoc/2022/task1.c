@@ -4,17 +4,15 @@
 #include "libc/fmt/conv.h"
 #include "libc/mem/gc.h"
 #include "libc/runtime/runtime.h"
+#include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
 #include "libc/x/xasprintf.h"
-
-#include "libc/stdio/stdio.h"
 
 #define STRINGIFY(x) #x
 #define LENGTH(x) (sizeof(STRINGIFY(x)) - 1)
 
 char* year = "2022";
 char* inputFileName = "task1.data";
-char* test = "/home/joshua/src/src/cosmo/cosmoaoc/cosmopolitan/third_party/aoc/2022/task1";
 
 void task1()
 {
@@ -37,7 +35,8 @@ void task1()
     }
     
     // Cosmo does not have UINT_WIDTH so using a macro to determine it
-    char chunk[LENGTH(UINT_MAX) + 1];
+    // Longest valid input is a a 32 bit integer, a new line and the string terminator
+    char chunk[LENGTH(UINT_MAX) + 2];
     
     uint_fast32_t elfNum = 1;
     uint_fast32_t currentElfCalories = 0;
@@ -51,7 +50,8 @@ void task1()
         {
             elfNum++;
             // There must be a better method with less branching
-            // Initially I thought  of 
+            // Initially I thought of using an array and then sorting it but thats lot of branching as well,
+            // perhaps a non comparative sort?
             if (currentElfCalories > thirdHighestElfCalories)
             {
                 if (currentElfCalories > secondHighestElfCalories)
