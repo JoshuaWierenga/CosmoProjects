@@ -8,7 +8,7 @@ void task4()
 {
     FILE* fp = faocdataopen(__FILE__);
     
-    // Assuming that section ids are at most 2 digtis, this an id, a hyphen, an id, a comma, an id, a hyphen, an id, a new line and the string terminator
+    // Assuming that section ids are at most 2 digits, this an id, a hyphen, an id, a comma, an id, a hyphen, an id, a new line and the string terminator
     char chunk[13];
     
     uint_fast16_t assignmentFullOverlapCount = 0;
