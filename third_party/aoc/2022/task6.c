@@ -15,9 +15,9 @@ void task6()
     char chunk[2];
     
     uint_fast16_t currentIndex = 0;
+    uint_fast16_t badIndex = 0;
     uint_fast16_t startOfPacketIndex = 0;
     uint_fast16_t startOfMessageIndex = 0;
-    uint_fast16_t badIndex = 0;
     
     char data[startOfMessageLength + 1];
     memset(data, '0', startOfMessageLength);
@@ -31,19 +31,13 @@ void task6()
             exit(1);
         }
         
-        memmove(data, data + 1, (startOfMessageLength - 1) * sizeof *data);
+        memmove(data + 1, data, (startOfMessageLength - 1) * sizeof *data);
+        data[0] = chunk[0];
         
-        // TODO reverse data so that new chars go on the left, then can just use strchr
-        // without this mess
-        // Work around strrchr finding chunk[0] itself if it is added before hand
-        // also need to finish the shift first so just set the new position to a junk value
-        data[startOfMessageLength - 1] = '0';
-        char* lastDuplicatePos = strrchr(data, chunk[0]);
-        data[startOfMessageLength - 1] = chunk[0];
-        
-        if (lastDuplicatePos != NULL && lastDuplicatePos != data + startOfMessageLength - 1)
+        char* lastDuplicatePos = strchr(data + 1, chunk[0]);
+        if (lastDuplicatePos != NULL)
         {
-            uint_fast16_t lastDuplicateIndex = currentIndex - strlen(lastDuplicatePos) + 1;
+            uint_fast16_t lastDuplicateIndex = currentIndex - startOfMessageLength + strlen(lastDuplicatePos);
             if (badIndex < lastDuplicateIndex)
             {
                 badIndex = lastDuplicateIndex;
@@ -64,8 +58,8 @@ void task6()
         currentIndex++;
     }
     
-    printf("Part 1: Number of pairs with full assignment overlap: %" PRIdFAST16 "\n", startOfPacketIndex);
-    printf("Part 2: Number of pairs with any assignment overlap:  %" PRIdFAST16 "\n", startOfMessageIndex);
+    printf("Part 1: Number of characters before first start-of-packet marker:   %" PRIdFAST16 "\n", startOfPacketIndex);
+    printf("Part 2: Number of characters before first start-of-message marker:  %" PRIdFAST16 "\n", startOfMessageIndex);
     
     fclose(fp);
 }
