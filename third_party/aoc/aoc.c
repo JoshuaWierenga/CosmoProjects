@@ -1,10 +1,10 @@
 // clang-format off
 
-#include "third_party/aoc/2022/task5.c"
+#include "third_party/aoc/2022/task6.c"
 
 int main()
 {
-    task5();
+    task6();
 
     return 0;
 }
