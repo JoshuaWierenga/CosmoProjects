@@ -72,6 +72,6 @@ void task1()
     endTesting();
     fclose(fp);
    
-    printf("Part 1: Highest number of calories:              %" PRIdFAST32 "\n", highestElfCalories);
-    printf("Part 2: Sum of three highest number of calories: %" PRIdFAST32 "\n", highestElfCalories + secondHighestElfCalories + thirdHighestElfCalories);
+    printf("Part 1: Highest number of calories:              %" PRIuFAST32 "\n", highestElfCalories);
+    printf("Part 2: Sum of three highest number of calories: %" PRIuFAST32 "\n", highestElfCalories + secondHighestElfCalories + thirdHighestElfCalories);
 }

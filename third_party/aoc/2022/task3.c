@@ -139,6 +139,6 @@ void task3()
     endTesting();
     fclose(fp);
     
-    printf("Part 1: Sum of priorities of misplaced items: %" PRIdFAST16 "\n", prioritySumPart1);
-    printf("Part 2: Sum of priorities of group badges:    %" PRIdFAST16 "\n", groupPrioritySumPart2);
+    printf("Part 1: Sum of priorities of misplaced items: %" PRIuFAST16 "\n", prioritySumPart1);
+    printf("Part 2: Sum of priorities of group badges:    %" PRIuFAST16 "\n", groupPrioritySumPart2);
 }

@@ -67,6 +67,6 @@ void task6()
     endTesting();
     fclose(fp);
     
-    printf("Part 1: Number of characters before first start-of-packet marker:   %" PRIdFAST16 "\n", startOfPacketIndex);
-    printf("Part 2: Number of characters before first start-of-message marker:  %" PRIdFAST16 "\n", startOfMessageIndex);
+    printf("Part 1: Number of characters before first start-of-packet marker:   %" PRIuFAST16 "\n", startOfPacketIndex);
+    printf("Part 2: Number of characters before first start-of-message marker:  %" PRIuFAST16 "\n", startOfMessageIndex);
 }

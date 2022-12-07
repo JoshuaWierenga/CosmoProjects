@@ -121,6 +121,6 @@ void task2()
     endTesting();
     fclose(fp);
     
-    printf("Part 1: Score with guide giving response: %" PRIdFAST16 "\n", scorePart1);
-    printf("Part 2: Score with guide giving outcome:  %" PRIdFAST16 "\n", scorePart2);
+    printf("Part 1: Score with guide giving response: %" PRIuFAST16 "\n", scorePart1);
+    printf("Part 2: Score with guide giving outcome:  %" PRIuFAST16 "\n", scorePart2);
 }

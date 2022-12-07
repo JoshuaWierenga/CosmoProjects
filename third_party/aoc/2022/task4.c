@@ -68,6 +68,6 @@ void task4()
     endTesting();
     fclose(fp);
     
-    printf("Part 1: Number of pairs with full assignment overlap: %" PRIdFAST16 "\n", assignmentFullOverlapCount);
-    printf("Part 2: Number of pairs with any assignment overlap:  %" PRIdFAST16 "\n", assignmentAnyOverlapCount);
+    printf("Part 1: Number of pairs with full assignment overlap: %" PRIuFAST16 "\n", assignmentFullOverlapCount);
+    printf("Part 2: Number of pairs with any assignment overlap:  %" PRIuFAST16 "\n", assignmentAnyOverlapCount);
 }
