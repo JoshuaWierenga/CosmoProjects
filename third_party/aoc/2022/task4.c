@@ -1,8 +1,10 @@
 // clang-format off
 #include "libc/inttypes.h"
+#include "libc/fmt/conv.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
-#include "libc/str/str.h"
-#include "third_party/aoc/utilities/aocdatamanagement.c"
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 
 void task4()
 {
@@ -13,6 +15,11 @@ void task4()
     
     uint_fast16_t assignmentFullOverlapCount = 0;
     uint_fast16_t assignmentAnyOverlapCount = 0;
+    
+    startTesting();
+    
+    rewind(fp);
+    assignmentFullOverlapCount = assignmentAnyOverlapCount = 0;
     
     while(fgets(chunk, sizeof(chunk), fp) != NULL)
     {
@@ -58,8 +65,9 @@ void task4()
         assignmentAnyOverlapCount += startDiff * firstDiff >= 0 || startDiff * secondDiff <= 0;
     }
     
+    endTesting();
+    fclose(fp);
+    
     printf("Part 1: Number of pairs with full assignment overlap: %" PRIdFAST16 "\n", assignmentFullOverlapCount);
     printf("Part 2: Number of pairs with any assignment overlap:  %" PRIdFAST16 "\n", assignmentAnyOverlapCount);
-    
-    fclose(fp);
 }

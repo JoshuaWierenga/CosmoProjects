@@ -1,9 +1,13 @@
 // clang-format off
 #include "libc/inttypes.h"
+#include "libc/fmt/conv.h"
+#include "libc/mem/gc.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
 #include "libc/x/x.h" // Yes xmalloc is somewhat a bad function
-#include "third_party/aoc/utilities/aocdatamanagement.c"
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 #include "third_party/aoc/utilities/dynamicarray/ary.h"
 
 void task5()
@@ -13,16 +17,22 @@ void task5()
     // Given 9 stacks, each of size 3 with 1 extra between stacks we need 3 * 9, 1 * 8, a new line and the string terminator
     char chunk[37];
     
-    bool finishedInitialState = false;
-    uint_fast8_t currentRow = 1;
-    uint_fast8_t stackCount = 0;
-    
     // array or array of chars representing a ship with stacks of crates
     struct ary(struct ary_char*) crateStacksPart1;
     struct ary(struct ary_char*) crateStacksPart2;
     ary_init(&crateStacksPart1, 9);
     ary_init(&crateStacksPart2, 9);
     
+    startTesting();
+    
+    rewind(fp);
+    ary_clear(&crateStacksPart1);
+    ary_clear(&crateStacksPart2);
+    
+    bool finishedInitialState = false;
+    uint_fast8_t currentRow = 1;
+    uint_fast8_t stackCount = 0;
+        
     char* start;
     
     while(fgets(chunk, sizeof(chunk), fp) != NULL)
@@ -115,6 +125,9 @@ void task5()
         ary_splice(fromStackPart2, 0, quantity, NULL, 0);
     }
     
+    endTesting();
+    fclose(fp);
+    
     fputs("Part 1: CrateMover 9000 Stack Tops: ", stdout);
     
     for (size_t i = 0; i < crateStacksPart1.len; i++)
@@ -132,10 +145,9 @@ void task5()
         putchar(stack->buf[0]);
         ary_release(stack);
     }
-    
+
     putchar('\n');
     
     ary_release(&crateStacksPart1);
     ary_release(&crateStacksPart2);
-    fclose(fp);
 }

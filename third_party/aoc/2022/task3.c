@@ -1,12 +1,11 @@
 // clang-format off
 #include "libc/inttypes.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 #include "third_party/aoc/utilities/hashmap/src/cmap.h"
-#include "third_party/aoc/utilities/aocdatamanagement.c"
-
-char* year = "2022";
-char* inputFileName = "task3.data";
 
 uint_fast8_t getItemPriority(char item)
 {
@@ -27,17 +26,23 @@ uint_fast8_t getItemPriority(char item)
 void task3()
 {
     FILE* fp = faocdataopen(__FILE__);
-    
+
     // Not sure on length so assume quite large, this allows 126 chars, a new line and the string terminator
     char chunk[128];
-    
+
     uint_fast16_t prioritySumPart1 = 0;
     uint_fast16_t groupPrioritySumPart2 = 0;
+    startTesting();
+    
+    rewind(fp);
+    
     // Stores the number of group members that have the given item in their rucksacks
     // For performance reasons, rather than wiping the list between groups, it just
     // sets the number of group members with the item to 0
     map_t(char, uint_fast8_t) groupItems;
     map_stdinit(&groupItems);
+
+    prioritySumPart1 = groupPrioritySumPart2 = 0;
 
     for (uint_fast8_t i = 0; fgets(chunk, sizeof(chunk), fp) != NULL; i++)
     {
@@ -129,9 +134,11 @@ void task3()
         map_delete(&compartment1Items);
     }
     
+    map_delete(&groupItems);
+    
+    endTesting();
+    fclose(fp);
+    
     printf("Part 1: Sum of priorities of misplaced items: %" PRIdFAST16 "\n", prioritySumPart1);
     printf("Part 2: Sum of priorities of group badges:    %" PRIdFAST16 "\n", groupPrioritySumPart2);
-
-    map_delete(&groupItems);
-    fclose(fp);
 }

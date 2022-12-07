@@ -1,15 +1,11 @@
 // clang-format off
 #include "libc/inttypes.h"
 #include "libc/limits.h"
+#include "libc/fmt/conv.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
-#include "libc/str/str.h"
-#include "third_party/aoc/utilities/aocdatamanagement.c"
-
-#define STRINGIFY(x) #x
-#define LENGTH(x) (sizeof(STRINGIFY(x)) - 1)
-
-char* year = "2022";
-char* inputFileName = "task1.data";
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 
 void task1()
 {
@@ -19,11 +15,17 @@ void task1()
     // Longest valid input is a a 32 bit integer, a new line and the string terminator
     char chunk[LENGTH(UINT_MAX) + 2];
     
-    uint_fast32_t elfNum = 1;
-    uint_fast32_t currentElfCalories = 0;
     uint_fast32_t thirdHighestElfCalories = 0;
     uint_fast32_t secondHighestElfCalories = 0;
     uint_fast32_t highestElfCalories = 0;
+    
+    startTesting();
+    
+    rewind(fp);
+    thirdHighestElfCalories = secondHighestElfCalories = highestElfCalories = 0;
+    
+    uint_fast32_t currentElfCalories = 0;
+    uint_fast32_t elfNum = 1;
     
     while(fgets(chunk, sizeof(chunk), fp) != NULL)
     {
@@ -67,8 +69,9 @@ void task1()
         currentElfCalories += input;
     }
     
+    endTesting();
+    fclose(fp);
+   
     printf("Part 1: Highest number of calories:              %" PRIdFAST32 "\n", highestElfCalories);
     printf("Part 2: Sum of three highest number of calories: %" PRIdFAST32 "\n", highestElfCalories + secondHighestElfCalories + thirdHighestElfCalories);
-    
-    fclose(fp);
 }

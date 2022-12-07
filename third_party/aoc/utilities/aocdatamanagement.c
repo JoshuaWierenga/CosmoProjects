@@ -1,10 +1,10 @@
-#include "libc/fmt/conv.h"
 #include "libc/mem/gc.h"
 #include "libc/runtime/runtime.h"
-#include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
 #include "libc/x/xasprintf.h"
+#include "third_party/aoc/utilities/aocdatamanagement.h"
 
+// TODO Get this to work in different locations at runtime
 FILE* faocdataopen(const char* sourcePath)
 {
     size_t sourcePathNoExtLength = strrchr(sourcePath, '.') - sourcePath + 1;

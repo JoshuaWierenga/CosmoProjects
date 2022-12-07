@@ -1,14 +1,9 @@
 // clang-format off
 #include "libc/inttypes.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
-#include "libc/str/str.h"
-#include "third_party/aoc/utilities/aocdatamanagement.c"
-
-#define STRINGIFY(x) #x
-#define LENGTH(x) (sizeof(STRINGIFY(x)) - 1)
-
-char* year = "2022";
-char* inputFileName = "task2.data";
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 
 enum RPSOption
 {
@@ -100,6 +95,11 @@ void task2()
     uint_fast16_t scorePart1 = 0;
     uint_fast16_t scorePart2 = 0;
     
+    startTesting();
+    
+    rewind(fp);
+    scorePart1 = scorePart2 = 0;
+    
     while (fgets(chunk, sizeof(chunk), fp) != NULL)
     {
         enum RPSOption opponent = ParseOpponent(chunk[0]);
@@ -118,8 +118,9 @@ void task2()
         scorePart2 += youPart2 + resultPart2;
     }
     
+    endTesting();
+    fclose(fp);
+    
     printf("Part 1: Score with guide giving response: %" PRIdFAST16 "\n", scorePart1);
     printf("Part 2: Score with guide giving outcome:  %" PRIdFAST16 "\n", scorePart2);
-    
-    fclose(fp);
 }

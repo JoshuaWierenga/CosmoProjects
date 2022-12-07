@@ -1,8 +1,10 @@
 // clang-format off
 #include "libc/inttypes.h"
+#include "libc/runtime/runtime.h"
 #include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
-#include "third_party/aoc/utilities/aocdatamanagement.c"
+#include "third_party/aoc/utilities/aocdatamanagement.h"
+#include "third_party/aoc/utilities/macros.h"
 
 #define startOfPacketLength 4
 #define startOfMessageLength 14
@@ -14,14 +16,18 @@ void task6()
     // Could improve performance by reading more than 1 chars at a time but this works for now
     char chunk[2];
     
-    uint_fast16_t currentIndex = 0;
-    uint_fast16_t badIndex = 0;
     uint_fast16_t startOfPacketIndex = 0;
     uint_fast16_t startOfMessageIndex = 0;
     
-    char data[startOfMessageLength + 1];
+    char data[startOfMessageLength + 1] = { 0 };
+    
+    startTesting();
+    
+    uint_fast16_t currentIndex = 0;
+    uint_fast16_t badIndex = 0;
+    
+    rewind(fp);
     memset(data, '0', startOfMessageLength);
-    data[startOfMessageLength] = '\0';
     
     while(fgets(chunk, sizeof(chunk), fp) != NULL)
     {
@@ -58,8 +64,9 @@ void task6()
         currentIndex++;
     }
     
+    endTesting();
+    fclose(fp);
+    
     printf("Part 1: Number of characters before first start-of-packet marker:   %" PRIdFAST16 "\n", startOfPacketIndex);
     printf("Part 2: Number of characters before first start-of-message marker:  %" PRIdFAST16 "\n", startOfMessageIndex);
-    
-    fclose(fp);
 }
