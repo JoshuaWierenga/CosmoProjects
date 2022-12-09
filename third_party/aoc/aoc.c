@@ -9,6 +9,7 @@
 #include "third_party/aoc/2022/task6.c"
 #include "third_party/aoc/2022/task7.c"
 #include "third_party/aoc/2022/task8.c"
+#include "third_party/aoc/2022/task9.c"
 
 // TODO Support external memory testing, I tried valgrind memcheck but it gives 0 regardless. cosmo issue?
 int main()
@@ -21,6 +22,7 @@ int main()
     runTask("2022 Day 6: Tuning Trouble", task6);
     runTask("2022 Day 7: No Space Left On Device", task7);
     runTask("2022 Day 8: Treetop Tree House", task8);
+    runTask("2022 Day 9", task9);
 
     return 0;
 }

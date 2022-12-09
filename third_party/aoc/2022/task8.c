@@ -8,7 +8,7 @@
 #include "third_party/aoc/utilities/aocdatamanagement.h"
 #include "third_party/aoc/utilities/macros.h"
 
-void setGridRow(uint_fast8_t* grid, uint_fast16_t gridSize, uint_fast16_t row, char* rowData)
+void setGridRow(uint_fast8_t* grid, uint_fast8_t gridSize, uint_fast8_t row, char* rowData)
 {
     if (grid == NULL || gridSize == 0 || rowData == NULL)
     {
@@ -30,13 +30,13 @@ void setGridRow(uint_fast8_t* grid, uint_fast16_t gridSize, uint_fast16_t row, c
     }
 }
 
-uint_fast8_t getGridData(uint_fast8_t* grid, uint_fast16_t gridSize, uint_fast16_t row, uint_fast16_t column)
+uint_fast8_t getGridData(uint_fast8_t* grid, uint_fast8_t gridSize, uint_fast8_t row, uint_fast8_t column)
 {
     return grid[row * gridSize + column];
 }
 
 // Very bad method since it is O(n^3) but it does work
-uint_fast16_t GetVisibleCount(uint_fast8_t* grid, uint_fast16_t gridSize)
+uint_fast16_t GetVisibleCount(uint_fast8_t* grid, uint_fast8_t gridSize)
 {
     if (grid == NULL || gridSize == 0)
     {
@@ -92,7 +92,7 @@ uint_fast16_t GetVisibleCount(uint_fast8_t* grid, uint_fast16_t gridSize)
 }
 
 // Very bad method since it is O(n^3) but it does work
-uint_fast32_t GetScenicScore(uint_fast8_t* grid, uint_fast16_t gridSize)
+uint_fast32_t GetScenicScore(uint_fast8_t* grid, uint_fast8_t gridSize)
 {
     uint_fast32_t maxScenicScore = 0;
     
@@ -101,10 +101,10 @@ uint_fast32_t GetScenicScore(uint_fast8_t* grid, uint_fast16_t gridSize)
         for (uint_fast8_t x = 0; x < gridSize; x++)
         {
             uint_fast8_t currentTree = getGridData(grid, gridSize, y, x);
-            uint_fast16_t leftDistance = 0;
-            uint_fast16_t rightDistance = 0;
-            uint_fast16_t topDistance = 0;
-            uint_fast16_t bottomDistance = 0;
+            uint_fast8_t leftDistance = 0;
+            uint_fast8_t rightDistance = 0;
+            uint_fast8_t topDistance = 0;
+            uint_fast8_t bottomDistance = 0;
             bool finishedLeft = false;
             bool finishedRight = false;
             bool finishedTop = false;
@@ -155,10 +155,10 @@ void task8()
     char chunk[128];
     
     // Assumes grid is square
-    uint_fast16_t gridSize = 0;
+    uint_fast8_t gridSize = 0;
     uint_fast8_t* grid = NULL;
     
-    for (uint_fast16_t x = 0; fgets(chunk, sizeof(chunk), fp) != NULL; x++)
+    for (uint_fast8_t x = 0; fgets(chunk, sizeof(chunk), fp) != NULL; x++)
     {
         if (x == 0 && gridSize == 0)
         {    
