@@ -10,7 +10,7 @@ THIRD_PARTY_AOC_A_FILES :=                          \
     $(wildcard third_party/aoc/*)                   \
     third_party/aoc/utilities/aocdatamanagement.c   \
     third_party/aoc/utilities/dynamicarray/ary.c    \
-    third_party/aoc/utilities/hashmap/src/cmap.c
+    third_party/aoc/utilities/hashmap/src/cmap.c 
 THIRD_PARTY_AOC_A_HDRS = $(filter %.h,$(THIRD_PARTY_AOC_A_FILES))
 THIRD_PARTY_AOC_A_SRCS = $(filter %.c,$(THIRD_PARTY_AOC_A_FILES))
 THIRD_PARTY_AOC_A_OBJS = $(THIRD_PARTY_AOC_A_SRCS:%.c=o/$(MODE)/%.o)

@@ -29,7 +29,7 @@ void moveHead(char direction, int_fast16_t* currentHeadX, int_fast16_t* currentH
         case 'L':
             if (*currentHeadX == INT_FAST16_MIN)
             {
-                perror("AUnable to parse input file");
+                perror("Unable to parse input file");
                 exit(1);
             }
             
@@ -38,7 +38,7 @@ void moveHead(char direction, int_fast16_t* currentHeadX, int_fast16_t* currentH
         case 'R':
             if (*currentHeadX == INT_FAST16_MAX)
             {
-                perror("BUnable to parse input file");
+                perror("Unable to parse input file");
                 exit(1);
             }
             
@@ -47,7 +47,7 @@ void moveHead(char direction, int_fast16_t* currentHeadX, int_fast16_t* currentH
         case 'U':
             if (*currentHeadY == INT_FAST16_MAX)
             {
-                perror("CUnable to parse input file");
+                perror("Unable to parse input file");
                 exit(1);
             }
             
@@ -56,7 +56,7 @@ void moveHead(char direction, int_fast16_t* currentHeadX, int_fast16_t* currentH
         case 'D':
             if (*currentHeadY == INT_FAST16_MIN)
             {
-                perror("DUnable to parse input file");
+                perror("Unable to parse input file");
                 exit(1);
             }
             

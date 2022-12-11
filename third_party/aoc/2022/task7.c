@@ -163,6 +163,12 @@ void task7()
     // Randomly picked size, enough for 126 chars, new line and terminating char
     char chunk[128];
     
+    uint_fast32_t smallestDirectorySum, requiredAmount, closestDirectorySize;
+    
+    startTesting();
+    
+    rewind(fp);
+    
     bool processingLS = false;
     struct FileSystemItem* currentDirectory = NULL;
     
@@ -301,12 +307,14 @@ void task7()
     CalcuateDirectorySizes(&root);
     //PrintFSFull(root, 0);
     
-    uint_fast32_t smallestDirectorySum = SumSmallDirectorySizes(&root, 100000);
+    smallestDirectorySum = SumSmallDirectorySizes(&root, 100000);
     
-    uint_fast32_t requiredAmount = 30000000 - (FileSystemSize - root.Size);
-    uint_fast32_t closestDirectorySize = FindClosestDirectorySize(&root, requiredAmount);
+    requiredAmount = 30000000 - (FileSystemSize - root.Size);
+    closestDirectorySize = FindClosestDirectorySize(&root, requiredAmount);
     
     FreeFS(&root);
+    
+    endTesting();
     fclose(fp);
     
     printf("Part 1: Sum of directories with total size of at most 100000:   %" PRIuFAST32 "\n", smallestDirectorySum);
