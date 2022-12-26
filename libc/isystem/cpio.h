@@ -1,4 +1,0 @@
-#ifndef COSMOPOLITAN_LIBC_ISYSTEM_CPIO_H_
-#define COSMOPOLITAN_LIBC_ISYSTEM_CPIO_H_
-#include "libc/sysv/consts/c.h"
-#endif /* COSMOPOLITAN_LIBC_ISYSTEM_CPIO_H_ */

@@ -1,4 +1,0 @@
-#ifndef COSMOPOLITAN_LIBC_ISYSTEM_SYS_STATFS_H_
-#define COSMOPOLITAN_LIBC_ISYSTEM_SYS_STATFS_H_
-#include "libc/calls/struct/statfs.h"
-#endif /* COSMOPOLITAN_LIBC_ISYSTEM_SYS_STATFS_H_ */

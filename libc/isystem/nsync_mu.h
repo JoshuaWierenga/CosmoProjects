@@ -1,4 +1,0 @@
-#ifndef COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_MU_H_
-#define COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_MU_H_
-#include "third_party/nsync/mu.h"
-#endif /* COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_MU_H_ */

@@ -1,4 +1,0 @@
-#ifndef COSMOPOLITAN_LIBC_ISYSTEM_XMMINTRIN_H_
-#define COSMOPOLITAN_LIBC_ISYSTEM_XMMINTRIN_H_
-#include "libc/intrin/xmmintrin.internal.h"
-#endif /* COSMOPOLITAN_LIBC_ISYSTEM_XMMINTRIN_H_ */

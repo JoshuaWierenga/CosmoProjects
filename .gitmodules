@@ -1,0 +1,3 @@
+[submodule "cosmopolitan/git"]
+	path = cosmopolitan/git
+	url = https://github.com/jart/cosmopolitan
