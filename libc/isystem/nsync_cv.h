@@ -1,4 +1,0 @@
-#ifndef COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_CV_H_
-#define COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_CV_H_
-#include "third_party/nsync/cv.h"
-#endif /* COSMOPOLITAN_LIBC_ISYSTEM_NSYNC_CV_H_ */
