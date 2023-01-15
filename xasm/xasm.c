@@ -11,8 +11,9 @@ General Flags:\n\
 -v, --version   Display version history and then quit.\n"
 #define version_string_format "X-TOY Assembler %s\n\
 Changelog:\n\
-0.1 Added basic argument parsing and help info.\n\
-0.2 Added long option and non option argument parsing.\n"
+0.1     Added basic argument parsing and help info.\n\
+0.2     Added long option and non option argument parsing.\n\
+0.2.1   Fixed a crash when providing the path to the file to be assembled.\n"
 
 void PrintUsage(char* path)
 {
@@ -24,7 +25,7 @@ void PrintVersionInfo()
     printf(version_string_format, version_string);
 }
 
-bool ParseParameters(int argc, char* argv[], char* assemblyFilePath)
+bool ParseParameters(int argc, char* argv[], char** assemblyFilePath)
 {
     int shortOptionValue = 0;
     int longOptionIndex = 0;
@@ -50,10 +51,10 @@ bool ParseParameters(int argc, char* argv[], char* assemblyFilePath)
         {
             case 'h':
                 PrintUsage(*argv);
-                return false;
+                return true;
             case 'v':
                 PrintVersionInfo(*argv);
-                return false;
+                return true;
             case '?':
                 if (isprint(optopt))
                 {
@@ -70,27 +71,26 @@ bool ParseParameters(int argc, char* argv[], char* assemblyFilePath)
         }
     }
 
-    assemblyFilePath = NULL;
-
+    *assemblyFilePath = NULL;
     if (optind == argc - 1)
     {
         // Not validating that this is a valid file at this point because of toctou
-        assemblyFilePath = argv[optind];
+        *assemblyFilePath = argv[optind];
     }
 
-    return assemblyFilePath != NULL;
+    return *assemblyFilePath != NULL;
 }
 
 
 int main(int argc, char* argv[])
 {
     char* assemblyFilePath = NULL;
-    bool havePath = ParseParameters(argc, argv, assemblyFilePath);
+    bool errorOccurred = ParseParameters(argc, argv, &assemblyFilePath);
 
     if (assemblyFilePath != NULL)
     {
         printf("Assembly file path: %s\n", assemblyFilePath);
     }
 
-    return (int)havePath;
+    return (int)!errorOccurred;
 }
