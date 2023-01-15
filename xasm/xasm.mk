@@ -7,16 +7,18 @@ THIRD_PARTY_XASM_ARTIFACTS += THIRD_PARTY_XASM_A
 THIRD_PARTY_XASM = $(THIRD_PARTY_XASM_A_DEPS) $(THIRD_PARTY_XASM_A)
 THIRD_PARTY_XASM_A = o/$(MODE)/third_party/xasm/xasm.a
 THIRD_PARTY_XASM_A_FILES :=                         \
+    third_party/make/getopt.c                       \
+    third_party/make/getopt1.c                      \
     $(wildcard third_party/xasm/*)
 THIRD_PARTY_XASM_A_HDRS = $(filter %.h,$(THIRD_PARTY_XASM_A_FILES))
 THIRD_PARTY_XASM_A_SRCS = $(filter %.c,$(THIRD_PARTY_XASM_A_FILES))
 THIRD_PARTY_XASM_A_OBJS = $(THIRD_PARTY_XASM_A_SRCS:%.c=o/$(MODE)/%.o)
 
 THIRD_PARTY_XASM_A_DIRECTDEPS =                     \
+        LIBC_INTRIN                                 \
         LIBC_NEXGEN32E                              \
         LIBC_STDIO                                  \
-        LIBC_STR                                    \
-        THIRD_PARTY_GETOPT
+        LIBC_STR
 
 THIRD_PARTY_XASM_A_DEPS :=                          \
         $(call uniq,$(foreach x,$(THIRD_PARTY_XASM_A_DIRECTDEPS),$($(x))))

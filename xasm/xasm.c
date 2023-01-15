@@ -1,50 +1,96 @@
 #include "libc/stdio/stdio.h"
-#include "third_party/getopt/getopt.h"
+#include "libc/str/str.h"
+#include "third_party/make/getopt.h"
 
-#define version_string "0.1"
+#define version_string "0.2"
 #define help_string_format "X-TOY Assembler %s\n\
-Usage: %s [general flags] [path to asm]\n\
+Usage: %s [general flags] path to asm\n\
 \n\
 General Flags:\n\
--?, -h: Display this usage information and then quit.\n\
--v: Display version history and then quit.\n"
+-h, --help      Display this usage information and then quit.\n\
+-v, --version   Display version history and then quit.\n"
 #define version_string_format "X-TOY Assembler %s\n\
 Changelog:\n\
-0.1 Added basic argument parsing and help info.\n"
+0.1 Added basic argument parsing and help info.\n\
+0.2 Added long option and non option argument parsing.\n"
 
 void PrintUsage(char* path)
 {
-	printf(help_string_format, version_string, path);
+    printf(help_string_format, version_string, path);
 }
 
 void PrintVersionInfo()
 {
-	printf(version_string_format, version_string);
+    printf(version_string_format, version_string);
 }
 
-bool ParseParameters(int argc, char* argv[])
+bool ParseParameters(int argc, char* argv[], char* assemblyFilePath)
 {
-	int opt;
-	while ((opt = getopt(argc, argv, "hv")) != -1)
-	{
-		switch (opt)
-		{
-			case 'v':
-				PrintVersionInfo(*argv);
-				return false;
-			case 'h':
-			default:
-				PrintUsage(*argv);
-				return false;
-		}
-	}
+    int shortOptionValue = 0;
+    int longOptionIndex = 0;
 
-	return false;
+    char* shortOptions = ":hv";
+    static struct option longOptions[] =
+    {
+        { "help",    no_argument, NULL, 'h'  },
+        { "version", no_argument, NULL, 'v'  },
+        { NULL,      0,           NULL, '\0' }
+    };
+
+    if (argc == 1)
+    {
+        fprintf(stderr, "Error: No arguments provided.\n");
+        return false;
+    }
+
+    opterr = 0;
+    while ((shortOptionValue = getopt_long(argc, argv, shortOptions, longOptions, &longOptionIndex)) != -1)
+    {
+        switch (shortOptionValue)
+        {
+            case 'h':
+                PrintUsage(*argv);
+                return false;
+            case 'v':
+                PrintVersionInfo(*argv);
+                return false;
+            case '?':
+                if (isprint(optopt))
+                {
+                    fprintf(stderr, "Error: Unknown option '-%c'.\n", optopt);
+                }
+                else
+                {
+                    fprintf(stderr, "Error: Unknown option character '\\x%x'.\n", optopt);
+                }
+                return false;
+            default:
+                fprintf(stderr, "Error: Unknown option character '\\x%x'.\n", optopt);
+                return false;
+        }
+    }
+
+    assemblyFilePath = NULL;
+
+    if (optind == argc - 1)
+    {
+        // Not validating that this is a valid file at this point because of toctou
+        assemblyFilePath = argv[optind];
+    }
+
+    return assemblyFilePath != NULL;
 }
 
 
 int main(int argc, char* argv[])
 {
-	ParseParameters(argc, argv);
-	return 0;
+    char* assemblyFilePath = NULL;
+    bool havePath = ParseParameters(argc, argv, assemblyFilePath);
+
+    if (assemblyFilePath != NULL)
+    {
+        printf("Assembly file path: %s\n", assemblyFilePath);
+    }
+
+    return (int)havePath;
 }
