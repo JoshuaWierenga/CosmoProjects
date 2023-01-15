@@ -2,7 +2,10 @@
 #include "libc/str/str.h"
 #include "third_party/make/getopt.h"
 
-#define version_string "0.2"
+#include "third_party/xasm/file.h"
+#include "third_party/xasm/instruction.h"
+
+#define version_string "0.2.1"
 #define help_string_format "X-TOY Assembler %s\n\
 Usage: %s [general flags] path to asm\n\
 \n\
@@ -77,20 +80,26 @@ bool ParseParameters(int argc, char* argv[], char** assemblyFilePath)
         // Not validating that this is a valid file at this point because of toctou
         *assemblyFilePath = argv[optind];
     }
+    else
+    {
+        fprintf(stderr, "Error: No path to file to assemble was provided.\n");
+        return false;
+    }
 
-    return *assemblyFilePath != NULL;
+    return true;
 }
-
 
 int main(int argc, char* argv[])
 {
     char* assemblyFilePath = NULL;
-    bool errorOccurred = ParseParameters(argc, argv, &assemblyFilePath);
-
-    if (assemblyFilePath != NULL)
+    bool succeeded = ParseParameters(argc, argv, &assemblyFilePath);
+    if (!succeeded)
     {
-        printf("Assembly file path: %s\n", assemblyFilePath);
+        return 1;
     }
 
-    return (int)!errorOccurred;
+    struct Operation operations[MAX_OPERATION_COUNT];
+    succeeded = ParseFile(assemblyFilePath, (struct Operation**)&operations);
+
+    return (int)!succeeded;
 }

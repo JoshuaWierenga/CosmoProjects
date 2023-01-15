@@ -16,9 +16,11 @@ THIRD_PARTY_XASM_A_OBJS = $(THIRD_PARTY_XASM_A_SRCS:%.c=o/$(MODE)/%.o)
 
 THIRD_PARTY_XASM_A_DIRECTDEPS =                     \
         LIBC_INTRIN                                 \
+        LIBC_MEM                                    \
         LIBC_NEXGEN32E                              \
         LIBC_STDIO                                  \
-        LIBC_STR
+        LIBC_STR                                    \
+        LIBC_X
 
 THIRD_PARTY_XASM_A_DEPS :=                          \
         $(call uniq,$(foreach x,$(THIRD_PARTY_XASM_A_DIRECTDEPS),$($(x))))
