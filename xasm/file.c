@@ -11,11 +11,18 @@
 
 bool ParseFile(char* assemblyFilePath, struct Operation* operations[])
 {
+    if (operations == NULL)
+    {
+        return false;
+    }
+
     FILE* fp = fopen(assemblyFilePath, "r");
     if (fp == NULL)
     {
         return false;
     }
+    // Ensure that fclose is recalled regardless of how this function returns
+    _defer(fclose, fp);
 
     char* line;
     for(uint_fast8_t lineNumber = 0;
@@ -40,9 +47,8 @@ bool ParseFile(char* assemblyFilePath, struct Operation* operations[])
 
         if (mnemonicNumber == InstructionCount)
         {
-            size_t firstCharBlockLength = strcspn(line, " ");
             fprintf(stderr, errorFormatString " Found invalid instruction mnemonic '%.*s'.\n",
-                lineNumber + 1, 1, firstCharBlockLength, line);
+                lineNumber + 1, 1, strcspn(line, " "), line);
             return false;
         }
         else
@@ -69,8 +75,6 @@ bool ParseFile(char* assemblyFilePath, struct Operation* operations[])
 
         free(line);
     }
-
-    fclose(fp);
 
     return true;
 }

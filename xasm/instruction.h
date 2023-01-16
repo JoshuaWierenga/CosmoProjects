@@ -1,8 +1,6 @@
 #ifndef XASM_INSTRUCTION_H
 #define XASM_INSTRUCTION_H
 
-#include "libc/inttypes.h"
-
 #define ARGUMENT_ZERO_SIZE 4
 #define ARGUMENT_REGISTER_SIZE 4
 #define ARGUMENT_IMMEDIATE_SIZE 8
@@ -18,7 +16,7 @@ struct Instruction
 {
     char* mnemonic;
     char opcode;
-    uint_fast8_t argumentCount;
+    size_t argumentCount;
     enum ArgumentType* argumentList;
 };
 

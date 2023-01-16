@@ -5,7 +5,7 @@
 #include "third_party/xasm/file.h"
 #include "third_party/xasm/instruction.h"
 
-#define version_string "0.2.1"
+#define version_string "0.3.1"
 #define help_string_format "X-TOY Assembler %s\n\
 Usage: %s [general flags] path to asm\n\
 \n\
@@ -14,9 +14,11 @@ General Flags:\n\
 -v, --version   Display version history and then quit.\n"
 #define version_string_format "X-TOY Assembler %s\n\
 Changelog:\n\
-0.1     Added basic argument parsing and help info.\n\
-0.2     Added long option and non option argument parsing.\n\
-0.2.1   Fixed a crash when providing the path to the file to be assembled.\n"
+0.1.0   Added basic argument parsing and help info.\n\
+0.2.0   Added long option and non option argument parsing.\n\
+0.2.1   Fixed a crash when providing the path to the file to be assembled.\n\
+0.3.0   Parse operation mnemonics from provided assembly file.\n\
+0.3.1   Fixed a potential crash and ensure that using -h and -v do not return an error code.\n"
 
 void PrintUsage(char* path)
 {
@@ -93,9 +95,9 @@ int main(int argc, char* argv[])
 {
     char* assemblyFilePath = NULL;
     bool succeeded = ParseParameters(argc, argv, &assemblyFilePath);
-    if (!succeeded)
+    if (assemblyFilePath == NULL)
     {
-        return 1;
+        return (int)!succeeded;
     }
 
     struct Operation operations[MAX_OPERATION_COUNT];
