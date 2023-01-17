@@ -1,11 +1,15 @@
 #ifndef XASM_INSTRUCTION_H
 #define XASM_INSTRUCTION_H
 
-#define ARGUMENT_ZERO_SIZE 4
-#define ARGUMENT_REGISTER_SIZE 4
-#define ARGUMENT_IMMEDIATE_SIZE 8
+#include "libc/inttypes.h"
 
-enum ArgumentType
+//#define PARAMETER_ZERO_SIZE 4
+//#define PARAMETER_REGISTER_SIZE 4
+//#define PARAMETER_IMMEDIATE_SIZE 8
+#define PARAMETER_IMMEDIATE_MAX_VALUE 0xFF
+#define PARAMETER_IMMEDIATE_MAX_HEX_DIGITS 2
+
+enum ParameterType
 {
     Zero,     // 4 Bit
     Register, // 4 Bit
@@ -14,10 +18,11 @@ enum ArgumentType
 
 struct Instruction
 {
-    char* mnemonic;
+    char mnemonic[4];
     char opcode;
-    size_t argumentCount;
-    enum ArgumentType* argumentList;
+    uint_fast8_t requiredParameterCount;
+    size_t totalParameterCount;
+    enum ParameterType* parameters;
 };
 
 extern const size_t InstructionCount;
@@ -28,7 +33,7 @@ extern const struct Instruction Instructions[];
 struct Operation
 {
     struct Instruction instruction;
-    char parameters[3];
+    char arguments[3];
 };
 
 #endif //XASM_INSTRUCTION_H

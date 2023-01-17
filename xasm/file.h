@@ -3,6 +3,6 @@
 
 #include "third_party/xasm/instruction.h"
 
-bool ParseFile(char* assemblyFilePath, struct Operation* operations[]);
+bool ParseFile(char* assemblyFilePath, struct Operation operations[]);
 
 #endif //XASM_FILE_H
