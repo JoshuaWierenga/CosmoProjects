@@ -1,7 +1,9 @@
 #include "libc/fmt/conv.h"
 #include "libc/fmt/fmt.h"
 #include "libc/inttypes.h"
+#include "libc/mem/fmt.h"
 #include "libc/mem/gc.h"
+#include "libc/mem/mem.h"
 #include "libc/stdio/stdio.h"
 #include "libc/str/str.h"
 
@@ -92,7 +94,7 @@ bool ParseImmediate(char line[], uint_fast8_t lineNumber, size_t* columnNumber, 
     return true;
 }
 
-bool ParseFile(char* assemblyFilePath, struct Operation operations[])
+bool ParseFile(char assemblyFilePath[], uint_fast8_t* operationCount, struct Operation operations[])
 {
     if (operations == NULL)
     {
@@ -106,6 +108,8 @@ bool ParseFile(char* assemblyFilePath, struct Operation operations[])
     }
     // Ensure that fclose is recalled regardless of how this function returns
     _defer(fclose, fp);
+
+    *operationCount = 0;
 
     char* line;
     size_t lineLength;
@@ -129,15 +133,15 @@ bool ParseFile(char* assemblyFilePath, struct Operation operations[])
         {
             return false;
         }
-        struct Instruction inst = operations->instruction = Instructions[mnemonicIndex];
+        struct Instruction inst = operations[*operationCount].instruction = Instructions[mnemonicIndex];
 
         size_t parameterIndex = 0;
         size_t argumentIndex = 0;
         uint_fast8_t parsedArgumentCount = 0;
         size_t columnNumber = 4;
-        while(parameterIndex < inst.totalParameterCount && columnNumber < lineLength)
+        while(parameterIndex < inst.totalParameterCount && (inst.parameters[parameterIndex] == Zero || columnNumber < lineLength))
         {
-            success = ParseImmediate(line, lineNumber, &columnNumber, inst.parameters[parameterIndex], operations->arguments, &argumentIndex, &parsedArgumentCount);
+            success = ParseImmediate(line, lineNumber, &columnNumber, inst.parameters[parameterIndex], operations[*operationCount].arguments, &argumentIndex, &parsedArgumentCount);
             if (!success)
             {
                 return false;
@@ -145,12 +149,15 @@ bool ParseFile(char* assemblyFilePath, struct Operation operations[])
 
             parameterIndex++;
 
-            if (columnNumber >= lineLength || (inst.parameters[parameterIndex - 1] != Zero && line[columnNumber] != ','))
+            if (inst.parameters[parameterIndex - 1] != Zero && (columnNumber >= lineLength || line[columnNumber] != ','))
             {
                 break;
             }
 
-            columnNumber += strspn(line + columnNumber, " ,");
+            if (columnNumber < lineLength)
+            {
+                columnNumber += strspn(line + columnNumber, " ,");
+            }
         }
 
         if (parsedArgumentCount < inst.requiredParameterCount)
@@ -172,8 +179,8 @@ bool ParseFile(char* assemblyFilePath, struct Operation operations[])
             return false;
         }
 
-        printf("Found Instruction with %" PRIuFAST8 " arguments: %s", inst.requiredParameterCount, inst.mnemonic);
-        for (size_t p = 0, a = 0; p < inst.requiredParameterCount; p++)
+        /*printf("Found Instruction with %" PRIuFAST8 " arguments: %s", inst.requiredParameterCount, inst.mnemonic);
+        for (size_t p = 0, a = 0; p < inst.totalParameterCount; p++, a++)
         {
             switch (inst.parameters[p])
             {
@@ -181,19 +188,41 @@ bool ParseFile(char* assemblyFilePath, struct Operation operations[])
                 printf(" 0x0");
                 break;
                 case Register:
-                printf("  R%c", operations->arguments[a]);
-                a++;
+                printf("  R%c", operations[*operationCount].arguments[a]);
                 break;
                 case Immediate:
-                printf(" 0x%c 0x%c", operations->arguments[a], operations->arguments[a + 1]);
-                a += 2;
+                printf(" 0x%c 0x%c", operations[*operationCount].arguments[a], operations[*operationCount].arguments[a + 1]);
+                a++;
                 break;
             }
         }
-        printf("\n");
+        printf("\n");*/
 
-        operations++;
+        (*operationCount)++;
     }
+
+    return true;
+}
+
+bool OutputBinary(char binaryFilePath[], uint_fast8_t operationCount, struct Operation operations[])
+{
+    if (operationCount == 0 || operations == NULL)
+    {
+        return false;
+    }
+
+    FILE* fp = fopen(binaryFilePath, "w");
+    if (fp == NULL)
+    {
+        return false;
+    }
+
+    for (size_t memoryLocation = 0; memoryLocation < operationCount && memoryLocation < PARAMETER_IMMEDIATE_MAX_VALUE; memoryLocation++)
+    {
+        fprintf(fp, "%02zX: %c%.*s\n", memoryLocation, operations[memoryLocation].instruction.opcode, OPERATION_ARGUMENT_COUNT, operations[memoryLocation].arguments);
+    }
+
+    fclose(fp);
 
     return true;
 }

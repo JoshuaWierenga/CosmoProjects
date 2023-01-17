@@ -29,11 +29,12 @@ extern const size_t InstructionCount;
 extern const struct Instruction Instructions[];
 
 #define MAX_OPERATION_COUNT 256
+#define OPERATION_ARGUMENT_COUNT 3
 
 struct Operation
 {
     struct Instruction instruction;
-    char arguments[3];
+    char arguments[OPERATION_ARGUMENT_COUNT];
 };
 
 #endif //XASM_INSTRUCTION_H
