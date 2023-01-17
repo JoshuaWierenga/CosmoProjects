@@ -5,5 +5,10 @@
 <br /><br />
 
 ## AoC 2022
-[Link to folder with AoC code](aoc)\
 [Link to AoC](https://adventofcode.com/2022)
+
+
+## X-TOY
+Writing an assembler and potentially a c compiler for the X-TOY cpu.\
+[Visual X-TOY Simulator](https://lift.cs.princeton.edu/xtoy/)\
+[X-TOY Documentation](https://www.comscigate.com/cs/IntroSedgewick/50machine/toy.pdf)
