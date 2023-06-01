@@ -33,10 +33,10 @@ Changelog:"
 isSubmodule()
 {
     output=$(cd cosmopolitan/git && git rev-parse --show-superproject-working-tree)
-    
+
     if [ -n "$output" ] ; then
         true
-    else 
+    else
         false
     fi
 }
@@ -52,7 +52,7 @@ setupWsl()
 # Overlay management
 
 removeOverlay()
-{    
+{
     mountpoint -q cosmopolitan/build && sudo umount cosmopolitan/build
     rm -rf cosmopolitan/build cosmopolitan/overlay
 }
@@ -60,14 +60,14 @@ removeOverlay()
 createOverlay()
 {
     mountpoint -q cosmopolitan/build && return
-    
+
     if [ ! -d cosmopolitan/git ] || ! isSubmodule; then
-        echo "Cosmopolitan submodule has not been initialised." 
+        echo "Cosmopolitan submodule has not been initialised."
         exit
     fi
-    
+
     mkdir -p cosmopolitan/build cosmopolitan/overlay/temp cosmopolitan/overlay/upper
-    
+
     # TODO Figure out how to use with unshare on wsl
     # sudo can be replaced on most linux systems with unshare -rm, however, for some reason this fails on wsl
     sudo mount -t overlay -o lowerdir=cosmopolitan/git,upperdir=cosmopolitan/overlay/upper,workdir=cosmopolitan/overlay/temp overlay cosmopolitan/build
@@ -75,7 +75,7 @@ createOverlay()
     # TODO Fix build flake on overlay
     # This test fails on overlayfs so get rid of it for now
     rm cosmopolitan/build/test/libc/stdio/tmpfile_test.c
-    
+
     updateIncludes=true
 }
 
@@ -83,18 +83,18 @@ updateOverlay()
 {
     for f in *; do
         [ ! -d "$f" ] || [ "$f" = "cosmopolitan" ] && continue
-        cp -r "$f" cosmopolitan/build/third_party/ 
-        
+        cp -r "$f" cosmopolitan/build/third_party/
+
         if [ "$f" = "$1" ] ; then
             projectExists=true
             rm -rf "cosmopolitan/build/o//third_party/$f" 2>/dev/null
         fi
     done
-        
+
     [ -z "$updateIncludes" ] && return
-    
+
     cp cosmopolitan/git/Makefile cosmopolitan/build/Makefile
-    
+
     # TODO Allow specifying where in the makefile to put the include so that specific includes can be added earlier on
     # TODO Allow specifying the name of the mk file
     for f in *; do
@@ -102,7 +102,7 @@ updateOverlay()
         sed -i "/include test\/test.mk/a include third_party\/$f\/$f.mk" cosmopolitan/build/Makefile
     done
 }
-  
+
 # based on https://www.shellscript.sh/tips/getopts/
 
 unset skipWSL updateIncludes projectExists
