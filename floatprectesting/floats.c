@@ -85,13 +85,12 @@ void printPowers(uint_fast8_t b1, int_fast16_t p1, uint_fast8_t b2, FLT_EXP_T p2
 }
 
 FLT_EXP_T findSmallestIncrease(FLT_T value) {
-  
   if (DEBUG) {
     puts("Finding smallest larger value");
   }
   
   FLT_EXP_T smallestPower;
-  for (smallestPower = FLT_EXP_MAX_VALUE; smallestPower >= FLT_EXP_MIN_VALUE; smallestPower--) {
+  for (smallestPower = FLT_EXP_MAX_VALUE; smallestPower >= FLT_EXP_MIN_VALUE; --smallestPower) {
     FLT_T newValue = value + FLT_POW(FLT_BASE, smallestPower);
     
     // Yes, exact float comparision
@@ -110,10 +109,9 @@ FLT_EXP_T findSmallestIncrease(FLT_T value) {
 }
 
 void displaySmallestIncreases() {
-  FLT_EXP_T currentPower = FLT_EXP_MIN_VALUE;
-  
-  while(currentPower <= FLT_EXP_MAX_VALUE) {
-    FLT_T value = FLT_POW(FLT_BASE, currentPower);
+  FLT_T value;
+  for (FLT_EXP_T currentPower = FLT_EXP_MIN_VALUE; currentPower <= FLT_EXP_MAX_VALUE && value < FLT_POW(FLT_BASE, FLT_EXP_MAX_VALUE); ++currentPower) {
+    value = FLT_POW(FLT_BASE, currentPower);
     
     printf("Value: ");
     printPowers(FLT_BASE, currentPower, 0, 0, '+');
@@ -130,14 +128,7 @@ void displaySmallestIncreases() {
       printPowers(FLT_BASE, currentPower, FLT_BASE, smallestPower, '+');
       printFloat(value + FLT_POW(FLT_BASE, smallestPower));
     }
-    putchar('\n');
-    
-    currentPower++;
-    if (value >= FLT_POW(FLT_BASE, FLT_EXP_MAX_VALUE)) {
-      break;
-    }
-    
-    putchar('\n');
+    puts("\n");
   }
 }
 
