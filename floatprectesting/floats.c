@@ -1,11 +1,12 @@
 #include <float.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
 #define TYPE BINARY
-#define SIZE 64
+#define SIZE 80
 
 #ifndef TYPE
 #error Floating point type not specified
@@ -13,6 +14,7 @@
 #elif !defined(SIZE)
 #error Floating point size not specified
 
+//TODO Ensure that FLT_RADIX and other macro values match expected values
 #elif TYPE == BINARY && SIZE == 32
 #define FLT_T float
 #define FLT_MAX_VAL FLT_MAX
@@ -46,6 +48,26 @@
 #define FLT_EXP_MIN_VALUE -1022
 #define FLT_EXP_MAX_VALUE 1023
 #define FLT_EXP_DIG_COUNT 4
+
+#elif TYPE == BINARY && SIZE == 80
+#define FLT_T long double
+#define FLT_MAX_VAL LDBL_MAX
+// GUESS: 2^14
+#define FLT_MAX_LEN 16384
+// GUESS: 2^14 - 2
+#define PRI_FLT ".16382Lf"
+#define FLT_POW powl
+
+#define FLT_BASE 2
+
+#define FLT_EXP_T int_fast16_t
+#define PRI_FLT_EXP PRIdFAST16
+// GUESS: -PRI_FLT
+#define FLT_EXP_MIN_VALUE -16382
+// GUESS: FLT_MAX_LEN - 1
+#define FLT_EXP_MAX_VALUE 16383
+#define FLT_EXP_DIG_COUNT 5
+
 #else
 #error Invalid combination of floating point type and size provided
 #endif
@@ -109,7 +131,7 @@ FLT_EXP_T findSmallestIncrease(FLT_T value) {
 }
 
 void displaySmallestIncreases() {
-  FLT_T value;
+  FLT_T value = 0;
   for (FLT_EXP_T currentPower = FLT_EXP_MIN_VALUE; currentPower <= FLT_EXP_MAX_VALUE && value < FLT_POW(FLT_BASE, FLT_EXP_MAX_VALUE); ++currentPower) {
     value = FLT_POW(FLT_BASE, currentPower);
     
