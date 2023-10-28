@@ -284,10 +284,10 @@ int main() {
   test80(7, SEVEN);
   test80(3, THREE);
   
-  //puts("\n128 bit");
-  //test128(10, TEN);
-  //test128(7, SEVEN);
-  //test128(3, THREE);
+  puts("\n128 bit");
+  test128(10, TEN);
+  test128(7, SEVEN);
+  test128(3, THREE);
   
   return 0;
 }
