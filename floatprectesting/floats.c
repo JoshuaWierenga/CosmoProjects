@@ -115,7 +115,7 @@ FLT_EXP_T findSmallestIncrease(FLT_T value) {
   for (smallestPower = FLT_EXP_MAX_VALUE; smallestPower >= FLT_EXP_MIN_VALUE; --smallestPower) {
     FLT_T newValue = value + FLT_POW(FLT_BASE, smallestPower);
     
-    // Yes, exact float comparision
+    // Yes, exact float comparison
     if (newValue == value) {
         break;
     }
