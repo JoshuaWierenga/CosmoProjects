@@ -17,23 +17,28 @@ static const char TEN[]   = "0.1000000000000000000000000000000000000000000000000
 static const char SEVEN[] = "0.142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857";
 static const char THREE[] = "0.333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333";
 
-// TODO: Find a way to not need two _Generic uses, the functions have different parameter lists so cannot use a function pointer afaik
+#ifdef __GLIBC__
+#define internalprintfloat(str, size, fstr, val) _Generic((val), \
+  _Float128: quadmath_snprintf,\
+  _Decimal32: strfromd32,\
+  _Decimal64: strfromd64,\
+  _Decimal128: strfromd128\
+)(str, size, fstr, val)
+#else
+#define internalprintfloat(str, size, fstr, val) _Generic((val), \
+  _Decimal32: strfromd32,\
+  _Decimal64: strfromd64,\
+  _Decimal128: strfromd128\
+)(str, size, fstr, val)
+#endif
+
+// TODO: Find a way to not need two _Generic uses, the functions have different parameter lists so cannot use a function pointer afaik. Is this worth doing now that they are in a seperate macro?
 // TODO: Find out why manual null termination is needed for cosmo
 #define printfloat(fstr, val) \
 {\
-  int size = _Generic((val),\
-    _Float128: quadmath_snprintf,\
-    _Decimal32: strfromd32,\
-    _Decimal64: strfromd64,\
-    _Decimal128: strfromd128\
-  )(NULL, 0, fstr, val);\
+  int size = internalprintfloat(NULL, 0, fstr, val);\
   char str[size + 1];\
-  _Generic((val),\
-    _Float128: quadmath_snprintf,\
-    _Decimal32: strfromd32,\
-    _Decimal64: strfromd64,\
-    _Decimal128: strfromd128\
-  )(str, size, fstr, val);\
+  (void)!internalprintfloat(str, size, fstr, val);\
   str[size] = '\0';\
   printf("%s\n", str);\
 }
@@ -155,11 +160,14 @@ void test80(int divisor, const char *truth) {
   // Need 1 if no minus and 2 if minus to ensure at least one space is printed
   int rightRequiredOffset = 1;
   
+// Will always be zero currently
+#if 0
   long double b80Diff;
   if (truth) {
     b80Diff = b80 - strtold(truth, NULL);
     rightRequiredOffset += (int)(b80Diff < 0);
   }
+#endif
   
   int expLen = printf("1.0 / %i", divisor);
   printf("%*s=%*s", leftRequiredOffset - expLen + 1, "", rightRequiredOffset, "");
@@ -171,19 +179,27 @@ void test80(int divisor, const char *truth) {
   
   printf("binary80%*s=%*s%.100Lf\n", leftRequiredOffset - 7, "", rightRequiredOffset, "", b80);
   
+// Will always be zero currently
+#if 0
   if (truth) {
     int rightPadding = b80Diff < 0 ? 1 : rightRequiredOffset;
     printf("diff%*s≈%*s%.100Lf\n", leftRequiredOffset - 3, "", rightPadding, "", b80Diff);
   }
-
+#endif
+  
   puts("\n");
 }
 
 void test128(int divisor, const char *truth) {
+#ifdef __GLIBC__
   int leftRequiredOffset = strlen("d128 - b128");
   _Float128 b128 = 1.0q / divisor;
+#else
+  int leftRequiredOffset = strlen("decimal128");
+#endif
   _Decimal128 d128 = 1.0dl / divisor;
   
+#ifdef __GLIBC__
   _Decimal128 overallDiff = d128 - (_Decimal128)b128; 
   int rightRequiredOffset = (int)(overallDiff < 0);
   
@@ -192,12 +208,18 @@ void test128(int divisor, const char *truth) {
     b128Diff = b128 - strtoflt128(truth, NULL);
     rightRequiredOffset |= (int)(b128Diff < 0);
   }
-
+#else
+  int rightRequiredOffset = 0;
+#endif
+  
+// Will always be zero currently
+#if 0
   _Decimal128 d128Diff;
   if (truth) {
     d128Diff = (_Decimal128)d128 - strtod128(truth, NULL);
     rightRequiredOffset |= (int)(d128Diff < 0);
   }
+#endif
   
   // Need 1 if no minus and 2 if minus to ensure at least one space is printed
   rightRequiredOffset++;
@@ -205,11 +227,12 @@ void test128(int divisor, const char *truth) {
   int expLen = printf("1.0 / %i", divisor);
   printf("%*s=%*s", leftRequiredOffset - expLen + 1, "", rightRequiredOffset, "");
   if (truth) {
-    printf("%.121s\n\n", truth);
+    printf("%.122s\n\n", truth);
   } else {
     printf("Unknown\n\n");
   }
   
+#ifdef __GLIBC__
   int b128Len = printf("binary128");
   printf("%*s=%*s", leftRequiredOffset - b128Len + 1, "", rightRequiredOffset, "");
   printfloat("%.120Qf", b128);
@@ -220,20 +243,27 @@ void test128(int divisor, const char *truth) {
     printfloat("%.120Qf", b128Diff);
   }
   putchar('\n');
+#endif
 
   int d128Len = printf("decimal128");
   printf("%*s=%*s", leftRequiredOffset - d128Len + 1, "", rightRequiredOffset, "");
   printfloat("%.120f", d128);
   
+// Will always be zero currently
+#if 0
   if (truth) {
     int rightPadding = d128Diff < 0 ? 1 : rightRequiredOffset;
     printf("diff%*s≈%*s", leftRequiredOffset - 3, "", rightPadding, "");
     printfloat("%.120f", d128Diff);
   }
+#endif
+  
+#ifdef __GLIBC__
   putchar('\n');
   
   printf("d128 - b128 ≈ ", "");
   printfloat("%.120f", overallDiff);
+#endif
   
   puts("\n");
 }
@@ -254,10 +284,10 @@ int main() {
   test80(7, SEVEN);
   test80(3, THREE);
   
-  puts("\n128 bit");
-  test128(10, TEN);
-  test128(7, SEVEN);
-  test128(3, THREE);
+  //puts("\n128 bit");
+  //test128(10, TEN);
+  //test128(7, SEVEN);
+  //test128(3, THREE);
   
   return 0;
 }
