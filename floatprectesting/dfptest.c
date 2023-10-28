@@ -17,13 +17,23 @@ static const char TEN[]   = "0.1000000000000000000000000000000000000000000000000
 static const char SEVEN[] = "0.142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857142857";
 static const char THREE[] = "0.333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333";
 
+// TODO: Find a way to not need two _Generic uses, the functions have different parameter lists so cannot use a function pointer afaik
 // TODO: Find out why manual null termination is needed for cosmo
-#define printdec(type, strfrom, fstr, val) \
+#define printfloat(fstr, val) \
 {\
-  type dec = val;\
-  int size = strfrom(NULL, 0, fstr, dec);\
+  int size = _Generic((val),\
+    _Float128: quadmath_snprintf,\
+    _Decimal32: strfromd32,\
+    _Decimal64: strfromd64,\
+    _Decimal128: strfromd128\
+  )(NULL, 0, fstr, val);\
   char str[size + 1];\
-  strfrom(str, size, fstr, dec);\
+  _Generic((val),\
+    _Float128: quadmath_snprintf,\
+    _Decimal32: strfromd32,\
+    _Decimal64: strfromd64,\
+    _Decimal128: strfromd128\
+  )(str, size, fstr, val);\
   str[size] = '\0';\
   printf("%s\n", str);\
 }
@@ -68,17 +78,17 @@ void test32(int divisor, const char *truth) {
   putchar('\n');
 
   printf("decimal32 =%*s", rightRequiredOffset, "");
-  printdec(_Decimal32, strfromd32, "%.40f", d32);
+  printfloat("%.40f", d32);
   
   if (truth) {
     int rightPadding = d32Diff < 0 ? 1 : rightRequiredOffset;
     printf("diff%*s≈%*s", leftRequiredOffset - 3, "", rightPadding, "");
-    printdec(_Decimal128, strfromd128, "%.40f", d32Diff);
+    printfloat("%.40f", d32Diff);
   }
   putchar('\n');
   
   printf("d32 - b32%*s≈ ", leftRequiredOffset - 8, "");
-  printdec(_Decimal128, strfromd128, "%.40f", overallDiff);
+  printfloat("%.40f", overallDiff);
   
   puts("\n");
 }
@@ -123,17 +133,17 @@ void test64(int divisor, const char *truth) {
   putchar('\n');
 
   printf("decimal64 =%*s", rightRequiredOffset, "");
-  printdec(_Decimal64, strfromd64, "%.80f", d64);
+  printfloat("%.80f", d64);
   
   if (truth) {
     int rightPadding = d64Diff < 0 ? 1 : rightRequiredOffset;
     printf("diff%*s≈%*s", leftRequiredOffset - 3, "", rightPadding, "");
-    printdec(_Decimal128, strfromd128, "%.80f", d64Diff);
+    printfloat("%.80f", d64Diff);
   }
   putchar('\n');
   
   printf("d64 - b64%*s≈ ", leftRequiredOffset - 8, "");
-  printdec(_Decimal128, strfromd128, "%.80f", overallDiff);
+  printfloat("%.80f", overallDiff);
   
   puts("\n");
 }
@@ -169,17 +179,17 @@ void test80(int divisor, const char *truth) {
   puts("\n");
 }
 
-void unfinishedtest128(int divisor, const char *truth) {
-  int leftRequiredOffset = strlen("decimal128");
-   __float128 b128 = 1.0l / divisor;
+void test128(int divisor, const char *truth) {
+  int leftRequiredOffset = strlen("d128 - b128");
+  _Float128 b128 = 1.0q / divisor;
   _Decimal128 d128 = 1.0dl / divisor;
   
-  _Decimal128 overallDiff = (_Decimal128)d128 - (_Decimal128)b128; 
+  _Decimal128 overallDiff = d128 - (_Decimal128)b128; 
   int rightRequiredOffset = (int)(overallDiff < 0);
   
-  long double b128Diff;
+  _Float128 b128Diff;
   if (truth) {
-    b128Diff = (long double)b128 - strtold(truth, NULL);
+    b128Diff = b128 - strtoflt128(truth, NULL);
     rightRequiredOffset |= (int)(b128Diff < 0);
   }
 
@@ -195,52 +205,37 @@ void unfinishedtest128(int divisor, const char *truth) {
   int expLen = printf("1.0 / %i", divisor);
   printf("%*s=%*s", leftRequiredOffset - expLen + 1, "", rightRequiredOffset, "");
   if (truth) {
-    printf("%.122s\n\n", truth);
+    printf("%.121s\n\n", truth);
   } else {
     printf("Unknown\n\n");
   }
   
-  printf("binary128%*s=%*s%.120f\n", leftRequiredOffset - 7, "", rightRequiredOffset, "", b128);
-  
+  int b128Len = printf("binary128");
+  printf("%*s=%*s", leftRequiredOffset - b128Len + 1, "", rightRequiredOffset, "");
+  printfloat("%.120Qf", b128);
+ 
   if (truth) {
     int rightPadding = b128Diff < 0 ? 1 : rightRequiredOffset;
-    printf("diff%*s≈%*s%.120Lf\n", leftRequiredOffset - 3, "", rightPadding, "", b128Diff);
+    printf("diff%*s≈%*s", leftRequiredOffset - 3, "", rightPadding, "");
+    printfloat("%.120Qf", b128Diff);
   }
   putchar('\n');
 
-  printf("decimal128 =%*s", rightRequiredOffset, "");
-  printdec(_Decimal128, strfromd128, "%.120f", d128);
+  int d128Len = printf("decimal128");
+  printf("%*s=%*s", leftRequiredOffset - d128Len + 1, "", rightRequiredOffset, "");
+  printfloat("%.120f", d128);
   
   if (truth) {
     int rightPadding = d128Diff < 0 ? 1 : rightRequiredOffset;
     printf("diff%*s≈%*s", leftRequiredOffset - 3, "", rightPadding, "");
-    printdec(_Decimal128, strfromd128, "%.120f", d128Diff);
+    printfloat("%.120f", d128Diff);
   }
   putchar('\n');
   
-  printf("d128 - b128%*s≈ ", leftRequiredOffset - 8, "");
-  printdec(_Decimal128, strfromd128, "%.120f", overallDiff);
+  printf("d128 - b128 ≈ ", "");
+  printfloat("%.120f", overallDiff);
   
   puts("\n");
-}
-
-void test128(int divisor, const char *truth) {
-#ifdef __GLIBC__
-    __float128 b128 = 1.0q / divisor;
-    int bsize = quadmath_snprintf(NULL, 0, "%.120Qf", b128);
-    char sb128[bsize + 1];
-    quadmath_snprintf(sb128, bsize, "%.120Qf", b128);
-    printf("1.0q  / %i = %s\n", divisor, sb128);
-#else
-    printf("1.0q  / %i = NOT SUPPORTED ON COSMO\n", divisor);
-#endif
-
-    _Decimal128 d128 = 1.0dl / divisor;
-    int dsize = strfromd128(NULL, 0, "%.120f", d128);
-    char sd128[dsize + 1];
-    strfromd128(sd128, dsize, "%.120f", d128);
-    sd128[dsize] = '\0';
-    printf("1.0ld / %i = %s\n\n", divisor, sd128);
 }
 
 int main() {
@@ -248,7 +243,7 @@ int main() {
   test32(10, TEN);
   test32(7, SEVEN);
   test32(3, THREE);
-
+  
   puts("\n64 bit");
   test64(10, TEN);
   test64(7, SEVEN);
@@ -263,11 +258,6 @@ int main() {
   test128(10, TEN);
   test128(7, SEVEN);
   test128(3, THREE);
-  //
-  //for (int i = 0; i < 20; i++) {
-  //  printf("142857");
-  //}
-  //putchar('\n');
-
+  
   return 0;
 }
