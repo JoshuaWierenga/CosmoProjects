@@ -11,6 +11,12 @@ Currently the program only supports those two but should later work for x86 80 b
 It's a single file that should be builable with basically anything, I used cosmocc but did not use any cosmopolitan specific features afaik.
 <br /><br />
 
+# Dynamic shared library loading
+Made mostly to help me understand shared libraries and how to to load them at runtime via dlopen/dlsym and LoadLibrary/GetProcAddress.
+The provided testprog.c should be buildable with glibc for linux, cosmo for linux and windows with seperate libraries and cosmo for
+linux and windows with the libaries embedded into the binary.
+<br /><br />
+
 # OLD, require build.sh
 
 ## AoC 2022
