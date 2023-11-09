@@ -48,12 +48,12 @@ int32_t add(int32_t a, int32_t b) {
     puts("Cosmo2 Linux");
     libPath = linuxLibPath;
     libPathSuffixLen = linuxLibPathSuffixLen;
-    zipPath = "/zip/lib/libtestlib.so";
+    zipPath = "/zip/libtestlib.so";
   } else if (IsWindows()) {
     puts("Cosmo2 Windows");
     libPath = windowsLibPath;
     libPathSuffixLen = windowsLibPathSuffixLen;
-    zipPath = "/zip/lib/libtestlib.dll";
+    zipPath = "/zip/libtestlib.dll";
   } else {
     fprintf(stderr, "OS not supported");
     exit(1);
