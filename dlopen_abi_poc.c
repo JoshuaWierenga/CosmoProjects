@@ -4,6 +4,7 @@
 
 // Alternative to https://github.com/JoshuaWierenga/CosmoGUI's wrapper generator to deal with ms and sysv abis.
 // I have yet to actually test this with cosmo's dlopen so there may be an issue my testing missed.
+// For testing the test functions have their abi determined based on the top macro block and can be swapped as gcc supports both.
 
 //Only used for testing, IsWindows is a substitute for cosmo's IsWindows()
 #if 1
