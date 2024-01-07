@@ -33,6 +33,7 @@ ABI int real_test2() {
 }
 
 // To be added to cosmo's dlfcn.h, should these be static?
+// Calling the wrong version will cause bizarre behaviour if not a crash so use cosmo_dlcall.
 #define cosmo_dldef(func) \
     __attribute__((ms_abi)) typeof(func) func##_ms;\
     __attribute__((sysv_abi)) typeof(func) func##_sysv
@@ -40,7 +41,7 @@ ABI int real_test2() {
 
 // To be added to cosmo's dlfcn.h, a cosmo_dlsym wrapper that handles abi by depending on cosmo_dldef
 // Unlike cosmo_dlsym this takes the function name by definition instead of by string
-// Returns the result of the cosmo_dlsym in case that is still needed
+// Returns the result of the cosmo_dlsym call in case that is still needed
 #define cosmo_dlsym2(h, func) ({\
     void *func = cosmo_dlsym(h, #func);\
     func##_ms = func;\
