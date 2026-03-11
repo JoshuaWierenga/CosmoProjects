@@ -35,8 +35,8 @@ ABI int real_test2() {
 // To be added to cosmo's dlfcn.h, should these be static?
 // Calling the wrong version will cause bizarre behaviour if not a crash so use cosmo_dlcall.
 #define cosmo_dldef(func) \
-    __attribute__((ms_abi)) typeof(func) func##_ms;\
-    __attribute__((sysv_abi)) typeof(func) func##_sysv
+    __attribute__((ms_abi)) typeof(func) *func##_ms = nullptr;\
+    __attribute__((sysv_abi)) typeof(func) *func##_sysv = nullptr
 #define cosmo_dlcall(func, ...) (IsWindows ? func##_ms(__VA_ARGS__) : func##_sysv(__VA_ARGS__)) 
 
 // To be added to cosmo's dlfcn.h, a cosmo_dlsym wrapper that handles abi by depending on cosmo_dldef
